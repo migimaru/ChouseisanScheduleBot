@@ -1,13 +1,13 @@
 name: Post Schedule
 
 on:
-  schedule:
-    # 投稿する曜日・時刻は下の cron を変更します。
-    # 書式は「分 時 日 月 曜日」。毎週なら「日」「月」は * のまま。
-    # 曜日は 0=日、1=月、2=火、3=水、4=木、5=金、6=土。
-    # 例「15 19 * * 1」は毎週月曜19:15。時刻は timezone の現地時刻です。
-    - cron: '30 8 * * 4' # 毎週木曜08:30
-      timezone: 'Asia/Tokyo'
+  # 定期実行を使う場合は、下の3行の先頭の「# 」を外します。
+  # 書式は「分 時 日 月 曜日」。毎週なら「日」「月」は * のまま。
+  # 曜日は 0=日、1=月、2=火、3=水、4=木、5=金、6=土。
+  # 例「15 19 * * 1」は毎週月曜19:15。時刻は timezone の現地時刻です。
+  # schedule:
+  #   - cron: '30 8 * * 4' # 毎週木曜08:30
+  #     timezone: 'Asia/Tokyo'
   workflow_dispatch:
     inputs:
       post:
@@ -24,6 +24,8 @@ concurrency:
 
 jobs:
   run-bot:
+    # 公開・配布用の初期設定。自分のリポジトリで使うときは次の1行を削除します。
+    if: ${{ false }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

@@ -11,7 +11,7 @@
 | 調整さんの名前・説明、Discordの投稿文 | `config.toml` の `[event]` |
 | 募集対象の日付・締切 | `config.toml` の `[dates]` |
 
-募集の投稿は初期設定で **毎週木曜08:30（日本時間）** です。1回の実行で1件の調整さんを作ります。
+公開・配布用の初期設定では、定期投稿と手動実行のジョブを無効にしています。定期投稿の設定例は **毎週木曜08:30（日本時間）** です。
 調整さんの説明文には **22:00〜23:00開催・21:45集合** の例を入れています。
 イベントに合わせて `[event]` の `memo` を編集してください。
 Discordの投稿文にも開催時刻を載せたい場合は、`message_template` にその案内を追記できます。
@@ -21,11 +21,10 @@ Discordの投稿文にも開催時刻を載せたい場合は、`message_templat
 
 1. 自分のGitHubリポジトリにこのコードを配置します。
 2. Settings → Secrets and variables → Actions で `DISCORD_WEBHOOK_URL` を登録します。
-3. `config.toml` と `.github/workflows/schedule.yml` を編集してコミットします。
+3. `config.toml` を編集し、`.github/workflows/schedule.yml` の `run-bot` にある `if: ${{ false }}` の行を削除してコミットします。
 4. Actions → Post Schedule → Run workflow でプレビューできます。
    実際に作成・投稿する場合は `post` にチェックを付けます。
-
-定期実行はデフォルトブランチの `schedule.yml` に従います。
+5. 定期投稿も使う場合は、デフォルトブランチの `schedule.yml` でコメントになっている `schedule:`、`cron:`、`timezone:` の3行を有効にします。
 
 ### 投稿する曜日・時刻を変更する
 
