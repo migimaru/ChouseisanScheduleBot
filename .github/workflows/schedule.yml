@@ -1,0 +1,46 @@
+name: Post Schedule
+
+on:
+  schedule:
+    # 投稿する曜日・時刻は下の cron を変更します。
+    # 書式は「分 時 日 月 曜日」。毎週なら「日」「月」は * のまま。
+    # 曜日は 0=日、1=月、2=火、3=水、4=木、5=金、6=土。
+    # 例「15 19 * * 1」は毎週月曜19:15。時刻は timezone の現地時刻です。
+    - cron: '30 8 * * 4' # 毎週木曜08:30
+      timezone: 'Asia/Tokyo'
+  workflow_dispatch:
+    inputs:
+      post:
+        description: '実際に調整さんを作成し、Discordに投稿する'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: schedule-bot
+  cancel-in-progress: false
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Preview (manual default)
+        if: github.event_name == 'workflow_dispatch' && !inputs.post
+        run: python main.py --dry-run
+      - name: Create event and post
+        if: github.event_name == 'schedule' || inputs.post
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: python main.py

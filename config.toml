@@ -1,0 +1,38 @@
+# 募集内容はここで、投稿する曜日・時刻は .github/workflows/schedule.yml で変更します。
+# Webhook URL は GitHub Actions Secrets の DISCORD_WEBHOOK_URL に登録します。
+
+# 開催時刻・集合時刻・シフト案内は memo に書きます。候補日から参加できる曜日を回答してもらいます。
+[event]
+name_template = "{month}月第{week_of_month}週"
+mention = "" # 例: <@&123456789012345678>（不要なら空欄）
+memo = """
+22:00〜23:00枠です。
+21:45までに集合お願いします。
+
+基本〇の方を優先でシフトを組みます。
+
+〇：参加OK
+△：一応行ける
+✖：無理"""
+message_template = """
+{mention}
+
+{deadline_text}
+{event_url}"""
+
+[dates]
+timezone = "Asia/Tokyo" # 日付計算に使う。通常は schedule.yml の timezone と同じ値。
+# 次の基準曜日から additional_weeks 週先を募集します。
+# 「次の日曜 + 1週間」を基準に、6日前の月曜から7日間を募集。
+reference_weekday = 6 # 月=0、火=1、水=2、木=3、金=4、土=5、日=6
+additional_weeks = 1
+start_offset_days = -6
+candidate_count = 7
+deadline_offset_days = -2 # 候補初日の2日前（土曜）
+candidate_template = "{date:%m/%d}({weekday})"
+deadline_template = "{deadline.month}/{deadline.day}({deadline_weekday})の午前までに入力お願いします。"
+
+[service]
+base_url = "https://chouseisan.com"
+wait_seconds = 20
+request_timeout_seconds = 30
